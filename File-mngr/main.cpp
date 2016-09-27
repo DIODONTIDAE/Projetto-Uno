@@ -14,6 +14,7 @@ int main()
 {
     int mode=0;
     char filename[256];
+    /*
     char tempname[20];
     while (mode<4)
     {
@@ -26,7 +27,9 @@ int main()
         case 3:{clscr();strcat(filename,"/..");ls(filename);break;}
         }
     }
-    //ls(filename);
+    //ls(filename);*/
+    scanf("%s",filename);
+    ls(filename);
     return 0;
 }
 char* cd(char* filename,char* added)

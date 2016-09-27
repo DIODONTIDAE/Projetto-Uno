@@ -36,7 +36,7 @@ DISTNAME      = Server1.0.0
 DISTDIR = /Projects/build-Server-Desktop_Qt_5_7_0_GCC_64bit-Debug/.tmp/Server1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS)  
+LIBS          = $(SUBLIBS) -lcrypto -lssl 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -48,8 +48,10 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../Server/main.cpp 
-OBJECTS       = main.o
+SOURCES       = ../Server/main.cpp \
+		../Server/ssl_server.cpp 
+OBJECTS       = main.o \
+		ssl_server.o
 DIST          = /opt/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/common/unix.conf \
 		/opt/Qt/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -185,6 +187,7 @@ DIST          = /opt/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		../Server/.qmake.stash \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -196,7 +199,8 @@ DIST          = /opt/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/lex.prf \
-		../Server/Server.pro  ../Server/main.cpp
+		../Server/Server.pro ssl_server.h ../Server/main.cpp \
+		../Server/ssl_server.cpp
 QMAKE_TARGET  = Server
 DESTDIR       = 
 TARGET        = Server
@@ -343,6 +347,7 @@ Makefile: ../Server/Server.pro /opt/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf /
 		/opt/Qt/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/opt/Qt/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -491,6 +496,7 @@ Makefile: ../Server/Server.pro /opt/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf /
 /opt/Qt/5.7/gcc_64/mkspecs/features/qt_config.prf:
 /opt/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf:
 /opt/Qt/5.7/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/Qt/5.7/gcc_64/mkspecs/features/exclusive_builds.prf:
 /opt/Qt/5.7/gcc_64/mkspecs/features/default_pre.prf:
 /opt/Qt/5.7/gcc_64/mkspecs/features/resolve_config.prf:
@@ -546,8 +552,11 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../Server/main.cpp 
+main.o: ../Server/main.cpp ../Server/ssl_server.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Server/main.cpp
+
+ssl_server.o: ../Server/ssl_server.cpp ../Server/ssl_server.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ssl_server.o ../Server/ssl_server.cpp
 
 ####### Install
 
