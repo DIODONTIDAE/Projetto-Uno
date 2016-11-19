@@ -10,6 +10,9 @@ void clscr(void)
    printf("\033[0;0f");
 }
 
+
+
+
 int main()
 {
     int mode=0;
