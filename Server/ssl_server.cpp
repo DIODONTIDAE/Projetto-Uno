@@ -6,11 +6,13 @@ Ssl_server::Ssl_server(int port)
     SSL_CTX *ctx;
 
     init_openssl();
+    qDebug() << "init_openssl succes";
     ctx = create_context();
 
     configure_context(ctx);
 
     sock = init_socket(port);
+    qDebug() << "initilisation...";
 
     /* Handle connections */
     while(1) {
@@ -24,8 +26,9 @@ Ssl_server::Ssl_server(int port)
             perror("Unable to accept");
             exit(EXIT_FAILURE);
         }
-
+        qDebug() << "accepted \nTCP-conection working ";
         ssl = SSL_new(ctx);
+        qDebug() << "context created";
         SSL_set_fd(ssl, client);
 
         if (SSL_accept(ssl) <= 0) {
@@ -63,19 +66,19 @@ int Ssl_server::init_socket(int port)
         perror("Unable to create socket");
         exit(EXIT_FAILURE);
     }
-
+    qDebug() << "socket created";
     if (bind(soc, (struct sockaddr*)&addr, sizeof(addr)) < 0)
     {
         perror("Unable to bind");
         exit(EXIT_FAILURE);
     }
-
+    qDebug() << "socket binded";
     if (listen(soc, 1) < 0)
     {
         perror("Unable to listen");
         exit(EXIT_FAILURE);
     }
-
+    qDebug() << "listening";
     return soc;
 }
 
@@ -88,9 +91,7 @@ SSL_CTX* Ssl_server::create_context()
 {
     const SSL_METHOD *method;
         SSL_CTX *ctx;
-
         method = SSLv23_server_method();
-
         ctx = SSL_CTX_new(method);
         if (!ctx)
         {
@@ -109,12 +110,12 @@ void Ssl_server::configure_context(SSL_CTX *ctx)
 //    }
 
     /* Set the key and cert */
-    if (SSL_CTX_use_certificate_file(ctx, "public.pem", SSL_FILETYPE_PEM) < 0) {
+    if (SSL_CTX_use_certificate_file(ctx, "/home/dio/prog_projects/cpp/Server/server_cert.pem", SSL_FILETYPE_PEM) < 0) {
         ERR_print_errors_fp(stderr);
     exit(EXIT_FAILURE);
     }
 
-    if (SSL_CTX_use_PrivateKey_file(ctx, "private.pem", SSL_FILETYPE_PEM) < 0 ) {
+    if (SSL_CTX_use_PrivateKey_file(ctx, "/home/dio/prog_projects/cpp/Server/server_key.pem", SSL_FILETYPE_PEM) < 0 ) {
         ERR_print_errors_fp(stderr);
     exit(EXIT_FAILURE);
     }
