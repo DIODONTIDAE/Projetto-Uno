@@ -29,13 +29,17 @@ Ssl_server::Ssl_server(int port)
         qDebug() << "accepted \nTCP-conection working ";
         ssl = SSL_new(ctx);
         qDebug() << "context created";
-        SSL_set_fd(ssl, client);
-
+        if (SSL_set_fd(ssl, client))
+        {
+            qDebug() << "no seted fd";
+        }
         if (SSL_accept(ssl) <= 0) {
             ERR_print_errors_fp(stderr);
+            qDebug() << "no accepted";
         }
         else {
             SSL_write(ssl, reply, strlen(reply));
+            qDebug() << "sending some shit";
         }
 
         SSL_free(ssl);
